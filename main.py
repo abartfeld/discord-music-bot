@@ -15,6 +15,10 @@ async def on_ready():
     print(bot.user.id)
     print('------')
 
+@bot.command()
+async def ping(ctx):
+    await ctx.send('pong')
+
 #REGION: Example commands from discord.py
 @bot.command()
 async def add(ctx, left: int, right: int):
@@ -66,11 +70,12 @@ async def _bot(ctx):
 #REGION: LP commands
 @bot.command()
 async def countdown(ctx):
-    """Auto countdown from 10 for LPs"""
+    """Auto countdown from 5 for LPs"""
     for i in range(5,0, -1):
         await ctx.send(i)
         time.sleep(1)
     await ctx.send('GO')
+
 #END REGION
 
 bot.run('token')
