@@ -78,4 +78,6 @@ async def countdown(ctx):
 
 #END REGION
 
-bot.run('token')
+# Make sure you have a token.txt in the same directory as main.py containing ONLY the bot token
+token = open('token.txt', 'r').read()
+bot.run(token)
