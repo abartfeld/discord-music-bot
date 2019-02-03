@@ -44,4 +44,4 @@ class ProgBot(commands.Bot):
 
 if __name__ == '__main__':
     prog_bot = ProgBot()
-    prog_bot.run(token)
+    prog_bot.run()
