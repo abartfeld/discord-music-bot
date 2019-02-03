@@ -9,6 +9,7 @@ token = open('token.txt', 'r').read()
 
 EXTENSIONS = ['cogs.commands']
 
+
 class ProgBot(commands.Bot):
 
     def __init__(self):
@@ -40,6 +41,7 @@ class ProgBot(commands.Bot):
     def run(self):
         super().run(self.token, reconnect=True)
 
+
 if __name__ == '__main__':
     prog_bot = ProgBot()
-    prog_bot.run()
+    prog_bot.run(token)
