@@ -19,7 +19,7 @@ class ProgBot(commands.Bot):
             try:
                 self.load_extension(ext)
             except Exception as e:
-                print(f'Failed to load extension {ext}', file=sys.stderr)
+                print('Failed to load extension {}'.format(ext))
 
     async def on_ready(self):
         print('Logged in as')
