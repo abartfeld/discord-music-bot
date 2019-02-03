@@ -30,6 +30,10 @@ class Commands:
             await ctx.send('Countdown is allowed only in LP channels.')
 
     @commands.command()
+    async def ping(self, ctx):
+        await ctx.send('Pong!')
+
+    @commands.command()
     async def close(self, ctx):
         if 'Mod' in [x.name for x in ctx.author.roles] or 'Dev' in [x.name for x in ctx.author.roles]:
             await ctx.bot.close()
