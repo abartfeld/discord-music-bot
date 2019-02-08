@@ -6,13 +6,19 @@ from discord.ext import commands
 
 token = open('token.txt', 'r').read()
 
-EXTENSIONS = ['cogs.commands']
+EXTENSIONS = [
+    'cogs.commands'
+]
+
+LIVE_PREFIX = '$'
+TEST_PREFIX = '?'
 
 
 class ProgBot(commands.Bot):
 
     def __init__(self):
-        super().__init__(command_prefix='$', description="Images & Words Bot")
+        # CHANGE TEST TO LIVE FOR DEPLOYED BUILD
+        super().__init__(command_prefix=LIVE_PREFIX, description="Images & Words Bot")
         self.token = token
 
         for ext in EXTENSIONS:
@@ -31,8 +37,6 @@ class ProgBot(commands.Bot):
         if message.author.bot:
             return
         await self.process_commands(message)
-
-    # async def on_reaction(self, react):
 
     async def close(self):
         await super().close()
