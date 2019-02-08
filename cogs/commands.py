@@ -6,6 +6,7 @@ from discord.ext import commands
 LP_CHANNEL_IDS = [419732859360641024, 457320312124604416]
 TEST_CHANNEL_IDS = [541472338013847553, 533773210345275401]
 
+
 class Commands:
 
     def __init__(self, bot):
@@ -28,15 +29,15 @@ class Commands:
     async def timestamp(self, ctx):
         if ctx.channel.id in LP_CHANNEL_IDS:
             spotify = None
-            if ctx.author.activities and any(isinstance(a, discord.Spotify) for a in ctx.author.activities):
-                spotify = ctx.author.activities[0]
+            if ctx.author.activities:
+                spotify = find_spotify(ctx.author.activities)
+            # if author is not playing spotify
             if spotify == None:
                 async for message in ctx.channel.history(limit=50):
-                    act = message.author.activities
-                    if act and any(isinstance(a, discord.Spotify) for a in act):
-                        spotify = act[0]
-                    else:
-                        continue
+                    spotify = find_spotify(message.author.activities)
+                    if spotify:
+                        break
+            # if nobody in past 50 messages is playing spotify
             if spotify == None:
                 await ctx.send("Can't find timestamp info!")
                 return
@@ -46,7 +47,7 @@ class Commands:
             seconds = seconds % 60
             seconds = str(int(seconds)).zfill(2)
 
-            song = discord.Embed(type='rich', title="Listening Party:", color=2351402)
+            song = discord.Embed(type='rich', title="Listening Party", color=2351402)
             song.set_thumbnail(url=spotify.album_cover_url)
             song.add_field(value="[{} - {}](https://open.spotify.com/track/{})".format(spotify.artist, spotify.title,
                                                                                        spotify.track_id),
@@ -64,6 +65,13 @@ class Commands:
     async def close(self, ctx):
         if 'Mod' in [x.name for x in ctx.author.roles] or 'Dev' in [x.name for x in ctx.author.roles]:
             await ctx.bot.close()
+
+
+def find_spotify(act):
+    for a in act:
+        if isinstance(a, discord.Spotify):
+            return a
+    return None
 
 
 def setup(bot):
