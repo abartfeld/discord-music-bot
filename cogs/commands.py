@@ -1,12 +1,12 @@
 import discord
 import asyncio
-from datetime import datetime
+import datetime
 from discord.ext import commands
 
-# LP_CHANNEL_IDS = [419732859360641024, 457320312124604416]
-TEST_CHANNEL_IDS = [539174471504756757]
+LP_CHANNEL_IDS = [419732859360641024, 457320312124604416]
+TEST_CHANNEL_IDS = [541472338013847553, 533773210345275401]
 
-CD_ALLOWED = {x: True for x in TEST_CHANNEL_IDS}
+CD_ALLOWED = {x: True for x in LP_CHANNEL_IDS}
 
 
 class Commands:
@@ -28,35 +28,38 @@ class Commands:
                 await ctx.send('GO')
                 CD_ALLOWED[ctx.channel.id] = True
         else:
-            await ctx.send('Countdown is allowed only in LP channels.')
+            await ctx.send('Countdown is allowed only in LP channels!')
 
     @commands.command()
     async def timestamp(self, ctx):
-        spotify = None
-        while spotify == None:
-            async for message in ctx.channel.history(limit=50):
-                try:
-                    act = message.author.activities[0]
-                except:
-                    continue
+        if ctx.channel.id in CD_ALLOWED:
+            spotify = None
+            if ctx.author.activities and ctx.author.activities[0] == discord.Spotify:
+                spotify = ctx.author.activities[0]
+            while spotify == None:
+                async for message in ctx.channel.history(limit=50):
+                    act = message.author.activities
+                    if act and type(act[0]) == discord.Spotify:
+                        spotify = act[0]
+                    else:
+                        continue
 
-                if type(act) == discord.Spotify:
-                    spotify = act
+            seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=3)).total_seconds()
+            minutes = (seconds % 3600) // 60
+            seconds = seconds % 60
+            if seconds < 10:
+                seconds = str(0) + str(int(seconds))
+            else:
+                seconds = str(int(seconds))
 
-        seconds = (datetime.utcnow() - spotify.start).total_seconds()
-        minutes = (seconds % 3600) // 60
-        seconds = seconds % 60
-        if seconds < 10:
-            seconds = str(0) + str(int(seconds))
+            song = discord.Embed(type='rich', title="Listening Party:", color=2351402)
+            song.set_thumbnail(url=spotify.album_cover_url)
+            song.add_field(value="[{} - {}](https://open.spotify.com/track/{})".format(spotify.title, spotify.artist, spotify.track_id),
+                           name="Currently at {}:{}".format(int(minutes), seconds))
+
+            await ctx.send(embed=song)
         else:
-            seconds = str(int(seconds))
-
-        song = discord.Embed(type='rich', title="Now Playing")
-        song.set_thumbnail(url=spotify.album_cover_url)
-        song.add_field(value="{} - {}".format(spotify.title, spotify.artist),
-                       name="Currently at {}:{}".format(int(minutes), seconds))
-
-        await ctx.send(embed=song)
+            await ctx.send("Timestamp command is only allowed in LP channels!")
 
     @commands.command()
     async def ping(self, ctx):
