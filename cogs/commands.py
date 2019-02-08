@@ -42,7 +42,7 @@ class Commands:
                 await ctx.send("Can't find timestamp info!")
                 return
 
-            seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=3)).total_seconds()
+            seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=5)).total_seconds()
             minutes = (seconds % 3600) // 60
             seconds = seconds % 60
             seconds = str(int(seconds)).zfill(2)
@@ -65,6 +65,8 @@ class Commands:
     async def close(self, ctx):
         if 'Mod' in [x.name for x in ctx.author.roles] or 'Dev' in [x.name for x in ctx.author.roles]:
             await ctx.bot.close()
+        else:
+            await ctx.send('Permission denied')
 
 
 def find_spotify(act):
