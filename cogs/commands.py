@@ -43,6 +43,9 @@ class Commands:
                         spotify = act[0]
                     else:
                         continue
+                if spotify == None:
+                    await ctx.send("Can't find timestamp info!")
+                    return
 
             seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=3)).total_seconds()
             minutes = (seconds % 3600) // 60
