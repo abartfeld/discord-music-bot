@@ -4,7 +4,7 @@ import random
 import sys
 from discord.ext import commands
 
-token = open('token.txt', 'r').read()
+token = open('token.txt', 'r').read().strip()
 
 EXTENSIONS = [
     'cogs.commands'

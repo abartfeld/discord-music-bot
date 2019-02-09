@@ -3,9 +3,11 @@ import asyncio
 import datetime
 from discord.ext import commands
 
+# official i&w lp channel ids
 LP_CHANNEL_IDS = [419732859360641024, 457320312124604416]
-TEST_CHANNEL_IDS = [541472338013847553, 533773210345275401]
 
+# test ids
+#LP_CHANNEL_IDS = [430646748487221261, 455253321067003927, 541472338013847553, 533773210345275401]
 
 class Commands:
 
@@ -27,6 +29,7 @@ class Commands:
 
     @commands.command()
     async def timestamp(self, ctx):
+        """Show the timestamp of what's playing in a current LP. Only allowed in LP channels."""
         if ctx.channel.id in LP_CHANNEL_IDS:
             spotify = None
             if ctx.author.activities:
@@ -42,7 +45,7 @@ class Commands:
                 await ctx.send("Can't find timestamp info!")
                 return
 
-            seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=5)).total_seconds()
+            seconds = (datetime.datetime.utcnow() - spotify.start + datetime.timedelta(seconds=1)).total_seconds()
             minutes = (seconds % 3600) // 60
             seconds = seconds % 60
             seconds = str(int(seconds)).zfill(2)
@@ -57,11 +60,11 @@ class Commands:
         else:
             await ctx.send("Timestamp command is only allowed in LP channels!")
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def ping(self, ctx):
         await ctx.send('Pong!')
 
-    @commands.command()
+    @commands.command(hidden=True)
     async def close(self, ctx):
         if 'Mod' in [x.name for x in ctx.author.roles] or 'Dev' in [x.name for x in ctx.author.roles]:
             await ctx.bot.close()
